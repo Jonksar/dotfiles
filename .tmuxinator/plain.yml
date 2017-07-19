@@ -1,0 +1,28 @@
+# ~/.tmuxinator/plain.yml
+
+name: plain
+root: ~
+
+
+windows:
+  - main:
+      layout: 38aa,275x80,0,0{141x80,0,0,0,133x80,142,0[133x26,142,0,2,133x40,142,27,3,133x12,142,68,4]}
+      panes:
+        -
+        -
+        -
+        - cava
+  - workspace:
+      layout: main-vertical
+      panes:
+        -
+        -
+  - monitor:
+      layout: main-vertical
+      panes:
+        -
+        - htop
+  - background_tasks:
+      layout: tiled
+      panes:
+        -
