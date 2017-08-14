@@ -66,9 +66,9 @@ set ls=2                        " status line always visible
 "
 
 :command! -nargs=* Silent execute ':silent !'.<args> | execute ':redraw!'
-noremap <Leader>q :quit<cr>
+noremap <Leader>q :qa<cr>
 noremap <Leader>w :w <cr>
-noremap <Leader>e :wq<cr>
+noremap <Leader>e :wqa!<cr>
 noremap <C-n> :NERDTreeToggle<cr>
 noremap <leader>n :NERDTreeToggle<cr>
 noremap <Leader>b :w <bar> !make -C $(sed 's.src.build.g' <<< $(pwd)) --no-print-directory -j4<cr>
@@ -354,10 +354,30 @@ map <C-Down> :wincmd j<CR>
 map <C-Left> :wincmd h<CR>
 map <C-Right> :wincmd l<CR>
 
+" changes every search value by last insert command
+nnoremap <C-c> :%s//<C-r>./eg<CR>
+
+
+
 " NERDTREE
+
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 map <leader>d :execute 'NERDTreeToggle ' . getcwd()<CR>
+
+" Remap arrowkeys to do something useful
+" http://codingfearlessly.com/vim-putting-arrows-to-use
+
+nmap <Left> <<
+nmap <Right> >>
+nmap <Down> ddp
+nmap <Up> dd2kp
+
+vmap <Left> <gv
+vmap <Right> >gv
+
+" remaps // under visual mode to search under selection
+vnoremap // y/<C-R>"<CR>
 
 " END VIM SETUP }}}
 " vim:foldmethod=marker
