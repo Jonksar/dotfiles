@@ -358,6 +358,10 @@ map <C-Right> :wincmd l<CR>
 nnoremap <C-c> :%s//<C-r>./eg<CR>
 
 
+nnoremap <C-j> 10j
+nnoremap <C-k> 10k
+
+
 
 " NERDTREE
 
@@ -378,6 +382,36 @@ vmap <Right> >gv
 
 " remaps // under visual mode to search under selection
 vnoremap // y/<C-R>"<CR>
+
+" Automatically generates header files
+autocmd bufnewfile *.c so /home/koala/.vim/templates/c_template.txt
+autocmd bufnewfile *.c exe "1,7g/File Name :.*/s//File Name : " .expand("%")
+autocmd bufnewfile *.c exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd Bufwritepre,filewritepre *.c execute "normal ma"
+autocmd Bufwritepre,filewritepre *.c exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd bufwritepost,filewritepost *.c execute "normal `a"
+
+autocmd bufnewfile *.cpp so /home/koala/.vim/templates/c_template.txt
+autocmd bufnewfile *.cpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
+autocmd bufnewfile *.cpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd Bufwritepre,filewritepre *.cpp execute "normal ma"
+autocmd Bufwritepre,filewritepre *.cpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd bufwritepost,filewritepost *.cpp execute "normal `a"
+
+autocmd bufnewfile *.hpp so /home/koala/.vim/templates/c_template.txt
+autocmd bufnewfile *.hpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
+autocmd bufnewfile *.hpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd Bufwritepre,filewritepre *.hpp execute "normal ma"
+autocmd Bufwritepre,filewritepre *.hpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd bufwritepost,filewritepost *.hpp execute "normal `a"
+
+autocmd bufnewfile *.py so /home/koala/.vim/templates/py_template.txt
+autocmd bufnewfile *.py exe "1,7g/File Name :.*/s//File Name : " .expand("%")
+autocmd bufnewfile *.py exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd Bufwritepre,filewritepre *.py execute "normal ma"
+autocmd Bufwritepre,filewritepre *.py exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd bufwritepost,filewritepost *.py execute "normal `a"
+
 
 " END VIM SETUP }}}
 " vim:foldmethod=marker

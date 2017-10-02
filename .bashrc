@@ -140,7 +140,7 @@ wl() {
 }
 
 # Handy filecount tool
-alias fc="tree | tail -2"
+# alias fc="tree | tail -2"
 alias cb="xclip -sel clip"
 
 # eliminate ls typing errors
