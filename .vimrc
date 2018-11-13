@@ -39,7 +39,6 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-repeat'
 Plugin 'tpope/vim-commentary'
 Plugin 'terryma/vim-multiple-cursors'
-Plugin 'Valloric/YouCompleteMe'
 
 " GUI
 Plugin 'vim-airline/vim-airline'
@@ -47,6 +46,18 @@ Plugin 'vim-airline/vim-airline-themes'
 
 " NERDTree
 Plugin 'https://github.com/scrooloose/nerdtree.git'
+
+" Track the engine.
+Plugin 'SirVer/ultisnips'
+
+" Snippets are separated from the engine. Add this if you want them:
+Plugin 'honza/vim-snippets'
+
+" Aligning text
+Plugin 'junegunn/vim-easy-align'
+
+ " If installed using Homebrew
+Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -67,7 +78,7 @@ set ls=2                        " status line always visible
 
 :command! -nargs=* Silent execute ':silent !'.<args> | execute ':redraw!'
 noremap <Leader>q :qa<cr>
-noremap <Leader>w :w <cr>
+noremap <Leader>w ma:w <cr>`a
 noremap <Leader>e :wqa!<cr>
 noremap <C-n> :NERDTreeToggle<cr>
 noremap <leader>n :NERDTreeToggle<cr>
@@ -321,7 +332,7 @@ set titlestring=%t%(\ [%R%M]%)
 
 set backspace=indent,eol,start
 
-map <leader>f :YcmCompleter FixIt<CR>
+map <leader>f :EasyAlign =<CR> :EasyAlign ,<CR>
 map <leader>g :YcmCompleter GoTo<CR>
 
 nnoremap <leader>u :nohlsearch<CR>v/\u<CR>
@@ -361,6 +372,15 @@ nnoremap <C-c> :%s//<C-r>./eg<CR>
 nnoremap <C-j> 10j
 nnoremap <C-k> 10k
 
+" Snippets
+" Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-n>"
+let g:UltiSnipsJumpBackwardTrigger="<c-b>"
+
+" If you want :UltiSnipsEdit to split your window.
+let g:UltiSnipsEditSplit="vertical"
+
 
 
 " NERDTREE
@@ -386,30 +406,30 @@ vnoremap // y/<C-R>"<CR>
 " Automatically generates header files
 autocmd bufnewfile *.c so /home/koala/.vim/templates/c_template.txt
 autocmd bufnewfile *.c exe "1,7g/File Name :.*/s//File Name : " .expand("%")
-autocmd bufnewfile *.c exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd bufnewfile *.c exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.c execute "normal ma"
-autocmd Bufwritepre,filewritepre *.c exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd Bufwritepre,filewritepre *.c exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.c execute "normal `a"
 
 autocmd bufnewfile *.cpp so /home/koala/.vim/templates/c_template.txt
 autocmd bufnewfile *.cpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
-autocmd bufnewfile *.cpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd bufnewfile *.cpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.cpp execute "normal ma"
-autocmd Bufwritepre,filewritepre *.cpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd Bufwritepre,filewritepre *.cpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.cpp execute "normal `a"
 
 autocmd bufnewfile *.hpp so /home/koala/.vim/templates/c_template.txt
 autocmd bufnewfile *.hpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
-autocmd bufnewfile *.hpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd bufnewfile *.hpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.hpp execute "normal ma"
-autocmd Bufwritepre,filewritepre *.hpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd Bufwritepre,filewritepre *.hpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.hpp execute "normal `a"
 
 autocmd bufnewfile *.py so /home/koala/.vim/templates/py_template.txt
 autocmd bufnewfile *.py exe "1,7g/File Name :.*/s//File Name : " .expand("%")
-autocmd bufnewfile *.py exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%d-%m-%Y")
+autocmd bufnewfile *.py exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.py execute "normal ma"
-autocmd Bufwritepre,filewritepre *.py exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%c")
+autocmd Bufwritepre,filewritepre *.py exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.py execute "normal `a"
 
 " highlight python self, when followed by a comma, a period or a parenth
