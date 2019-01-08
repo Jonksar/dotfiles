@@ -59,10 +59,29 @@ Plugin 'junegunn/vim-easy-align'
  " If installed using Homebrew
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
+Plugin 'Valloric/YouCompleteMe'
+
+Plugin 'JamshedVesuna/vim-markdown-preview'
+
 call vundle#end()            " required
 filetype plugin indent on    " required
 
 " VIM Setup {{{ ===============================================================
+
+" vim-markdown-preview
+let vim_markdown_preview_github=1
+
+" auto complete
+"
+
+let g:ycm_python_interpreter_path = ''
+let g:ycm_python_sys_path = []
+let g:ycm_extra_conf_vim_data = [
+  \  'g:ycm_python_interpreter_path',
+  \  'g:ycm_python_sys_path'
+  \]
+let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+
 
 let mapleader = ","
 let maplocalleader=' '
@@ -324,15 +343,13 @@ autocmd FileType plist NeoBundleSource plist.vim
 " Git commit
 autocmd Filetype gitcommit setlocal spell textwidth=72
 
-" END FILETYPES }}}
-let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
-
 " Window title
 set titlestring=%t%(\ [%R%M]%)
 
 set backspace=indent,eol,start
 
 map <leader>f :EasyAlign =<CR> :EasyAlign ,<CR>
+map <leader>r :FZF<CR>
 map <leader>g :YcmCompleter GoTo<CR>
 
 nnoremap <leader>u :nohlsearch<CR>v/\u<CR>
@@ -374,7 +391,7 @@ nnoremap <C-k> 10k
 
 " Snippets
 " Trigger configuration. Do not use <tab> if you use https://github.com/Valloric/YouCompleteMe.
-let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsExpandTrigger="<leader><leader>"
 let g:UltiSnipsJumpForwardTrigger="<c-n>"
 let g:UltiSnipsJumpBackwardTrigger="<c-b>"
 
