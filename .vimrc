@@ -19,8 +19,6 @@ Plugin 'altercation/vim-colors-solarized.git'
 Plugin 'vim-scripts/JSON.vim', {'autoload': {'filetypes': ['json']}}
 Plugin 'kchmck/vim-coffee-script', {'autoload': {'filetypes': ['coffee']}}
 Plugin 'vim-scripts/po.vim--gray', {'autoload': {'filetypes': ['po']}}
-Plugin 'vim-scripts/plist.vim', {'autoload': {'filetypes': ['plist']}}
-Plugin 'hunner/vim-plist', {'autoload': {'filetypes': ['plist']}}
 Plugin 'joedicastro/vim-markdown', {'autoload': {'filetypes': ['markdown']}}
 Plugin 'sophacles/vim-bundle-mako', {'autoload': {'filetypes': ['mako']}}
 Plugin 'elzr/vim-json', {'autoload': {'filetypes': ['json']}}
@@ -60,6 +58,7 @@ Plugin 'junegunn/vim-easy-align'
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'zxqfl/tabnine-vim'
 
 Plugin 'JamshedVesuna/vim-markdown-preview'
 
@@ -74,13 +73,16 @@ let vim_markdown_preview_github=1
 " auto complete
 "
 
-let g:ycm_python_interpreter_path = ''
-let g:ycm_python_sys_path = []
-let g:ycm_extra_conf_vim_data = [
-  \  'g:ycm_python_interpreter_path',
-  \  'g:ycm_python_sys_path'
-  \]
-let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
+let g:ycm_server_python_interpreter='/usr/bin/python'
+let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+
+" let g:ycm_python_interpreter_path = ''
+" let g:ycm_python_sys_path = []
+" let g:ycm_extra_conf_vim_data = [
+"   \  'g:ycm_python_interpreter_path',
+"   \  'g:ycm_python_sys_path'
+"   \]
+" let g:ycm_global_ycm_extra_conf = '~/.vim/.ycm_extra_conf.py'
 
 
 let mapleader = ","
