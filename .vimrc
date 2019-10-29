@@ -3,6 +3,7 @@ filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=/usr/local/opt/fzf
 call vundle#begin()
 
 " let Vundle manage Vundle, required
@@ -57,7 +58,7 @@ Plugin 'junegunn/vim-easy-align'
  " If installed using Homebrew
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 
-Plugin 'Valloric/YouCompleteMe'
+" Plugin 'Valloric/YouCompleteMe'
 Plugin 'zxqfl/tabnine-vim'
 
 Plugin 'JamshedVesuna/vim-markdown-preview'
@@ -73,8 +74,8 @@ let vim_markdown_preview_github=1
 " auto complete
 "
 
-let g:ycm_server_python_interpreter='/usr/bin/python'
-let g:ycm_global_ycm_extra_conf='~/.ycm_extra_conf.py'
+let g:ycm_server_python_interpreter='/usr/local/bin/python2'
+let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
 
 " let g:ycm_python_interpreter_path = ''
 " let g:ycm_python_sys_path = []
@@ -423,28 +424,28 @@ vmap <Right> >gv
 vnoremap // y/<C-R>"<CR>
 
 " Automatically generates header files
-autocmd bufnewfile *.c so /home/koala/.vim/templates/c_template.txt
+autocmd bufnewfile *.c so /Users/joonatan/.vim/templates/c_template.txt
 autocmd bufnewfile *.c exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.c exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.c execute "normal ma"
 autocmd Bufwritepre,filewritepre *.c exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.c execute "normal `a"
 
-autocmd bufnewfile *.cpp so /home/koala/.vim/templates/c_template.txt
+autocmd bufnewfile *.cpp so /Users/joonatan/.vim/templates/c_template.txt
 autocmd bufnewfile *.cpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.cpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.cpp execute "normal ma"
 autocmd Bufwritepre,filewritepre *.cpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.cpp execute "normal `a"
 
-autocmd bufnewfile *.hpp so /home/koala/.vim/templates/c_template.txt
+autocmd bufnewfile *.hpp so /Users/joonatan/.vim/templates/c_template.txt
 autocmd bufnewfile *.hpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.hpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.hpp execute "normal ma"
 autocmd Bufwritepre,filewritepre *.hpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.hpp execute "normal `a"
 
-autocmd bufnewfile *.py so /home/koala/.vim/templates/py_template.txt
+autocmd bufnewfile *.py so /Users/joonatan/.vim/templates/py_template.txt
 autocmd bufnewfile *.py exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.py exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.py execute "normal ma"
