@@ -3,7 +3,6 @@ filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
-set rtp+=/usr/local/opt/fzf
 call vundle#begin()
 
 " let Vundle manage Vundle, required
@@ -57,8 +56,9 @@ Plugin 'junegunn/vim-easy-align'
 
  " If installed using Homebrew
 Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plugin 'junegunn/fzf.vim'
 
-" Plugin 'Valloric/YouCompleteMe'
+Plugin 'Valloric/YouCompleteMe'
 Plugin 'zxqfl/tabnine-vim'
 
 Plugin 'JamshedVesuna/vim-markdown-preview'
@@ -74,7 +74,7 @@ let vim_markdown_preview_github=1
 " auto complete
 "
 
-let g:ycm_server_python_interpreter='/usr/local/bin/python2'
+let g:ycm_server_python_interpreter='/usr/local/bin/python3'
 let g:ycm_global_ycm_extra_conf='~/.vim/bundle/YouCompleteMe/.ycm_extra_conf.py'
 
 " let g:ycm_python_interpreter_path = ''
@@ -105,6 +105,7 @@ noremap <Leader>e :wqa!<cr>
 noremap <C-n> :NERDTreeToggle<cr>
 noremap <leader>n :NERDTreeToggle<cr>
 noremap <Leader>b :w <bar> !make -C $(sed 's.src.build.g' <<< $(pwd)) --no-print-directory -j4<cr>
+noremap <Leader>t :w <bar> !make test<cr>
 vmap <Leader>y "+y
 vmap <Leader>d "+d
 nmap <Leader>p "+p
@@ -161,6 +162,7 @@ set ruler
 set lazyredraw
 set autoread
 set ttimeoutlen=0
+
 " No annoying sound on errors
 set noerrorbells
 set novisualbell
@@ -169,7 +171,6 @@ set tm=500
 "}}}
 "
 " Numbers
-
 function! NumberToggle()
   if(&relativenumber == 1)
     set number
@@ -199,6 +200,7 @@ set foldmethod=indent          " automatically fold by indent level
 set nofoldenable               " ... but have folds open by default"
 set virtualedit=all
 set colorcolumn=200
+
 " highlight tabs and trailing spaces
 " source: https://wincent.com/blog/making-vim-highlight-suspicious-characters
 set listchars=nbsp:¬,eol:¶,tab:→\ ,extends:»,precedes:«,trail:•
@@ -225,7 +227,6 @@ set undoreload=1000
 
 
 " Colorscheme {{{
-
 syntax enable                  " enable the syntax highlight
 set background=dark            " set a dark background
 let g:solarized_termtrans = 1
@@ -314,6 +315,8 @@ let g:indentLine_color_term = 239
 
 " Syntastic
 let g:syntastic_sh_checkers = ['shellcheck', 'sh']
+let g:syntastic_python_flake8_post_args='--ignore=E501,E128,E225'
+let g:syntastic_python_checkers=['flake8']
 let g:syntastic_error_symbol = '✘'
 let g:syntastic_warning_symbol = '⚠'
 let g:syntastic_style_error_symbol = '⚡'
@@ -352,7 +355,7 @@ set titlestring=%t%(\ [%R%M]%)
 set backspace=indent,eol,start
 
 map <leader>f :EasyAlign =<CR> :EasyAlign ,<CR>
-map <leader>r :FZF<CR>
+map <leader>r :Files<CR>
 map <leader>g :YcmCompleter GoTo<CR>
 
 nnoremap <leader>u :nohlsearch<CR>v/\u<CR>
@@ -424,28 +427,28 @@ vmap <Right> >gv
 vnoremap // y/<C-R>"<CR>
 
 " Automatically generates header files
-autocmd bufnewfile *.c so /Users/joonatan/.vim/templates/c_template.txt
+autocmd bufnewfile *.c so /Users/joonatansamuel/.vim/templates/c_template.txt
 autocmd bufnewfile *.c exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.c exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.c execute "normal ma"
 autocmd Bufwritepre,filewritepre *.c exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.c execute "normal `a"
 
-autocmd bufnewfile *.cpp so /Users/joonatan/.vim/templates/c_template.txt
+autocmd bufnewfile *.cpp so /Users/joonatansamuel/.vim/templates/c_template.txt
 autocmd bufnewfile *.cpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.cpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.cpp execute "normal ma"
 autocmd Bufwritepre,filewritepre *.cpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.cpp execute "normal `a"
 
-autocmd bufnewfile *.hpp so /Users/joonatan/.vim/templates/c_template.txt
+autocmd bufnewfile *.hpp so /Users/joonatansamuel/.vim/templates/c_template.txt
 autocmd bufnewfile *.hpp exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.hpp exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.hpp execute "normal ma"
 autocmd Bufwritepre,filewritepre *.hpp exe "1," . 10 . "g/Last Modified :.*/s/Last Modified :.*/Last Modified : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd bufwritepost,filewritepost *.hpp execute "normal `a"
 
-autocmd bufnewfile *.py so /Users/joonatan/.vim/templates/py_template.txt
+autocmd bufnewfile *.py so /Users/joonatansamuel/.vim/templates/py_template.txt
 autocmd bufnewfile *.py exe "1,7g/File Name :.*/s//File Name : " .expand("%")
 autocmd bufnewfile *.py exe "1,7g/Creation Date :.*/s//Creation Date : " .strftime("%Y-%m-%d %a %I:%M %p")
 autocmd Bufwritepre,filewritepre *.py execute "normal ma"
