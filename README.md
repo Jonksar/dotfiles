@@ -1,5 +1,5 @@
 # dotfiles
-
+Clone the repo to .dotfiles in home folder
 
 # Installation
 ```
