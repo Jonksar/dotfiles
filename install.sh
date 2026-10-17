@@ -1,56 +1,86 @@
+#!/bin/bash
+# Idempotent setup for a new machine. Re-run any time.
+#   curl -fsSL https://raw.githubusercontent.com/Jonksar/dotfiles/master/install.sh | bash
+set -u
+DOTFILES_DIR="$HOME/.dotfiles"
+PRIVATE_DIR="$HOME/.dotfiles-private"
+PRIVATE_REPO="git@github.com:Jonksar/dotfiles-private.git"
+
+have() { command -v "$1" >/dev/null 2>&1; }
+clone_if_missing() { [ -d "$2" ] || git clone -q "$1" "$2"; }
+link() { # link $DOTFILES_DIR/$1 -> $HOME/$1 (or into $2) if the source exists
+  local src="$DOTFILES_DIR/$1" dst="${2:-$HOME}/$(basename "$1")"
+  [ -e "$src" ] || return 0
+  [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ] && return 0
+  [ -e "$dst" ] && [ ! -L "$dst" ] && mv "$dst" "$dst.pre-dotfiles"
+  ln -sfnv "$src" "$dst"
+}
+
+# 0. Get the repo itself (so the curl|bash one-liner works)
+have git || { echo "git is required"; exit 1; }
+clone_if_missing https://github.com/Jonksar/dotfiles.git "$DOTFILES_DIR"
+
+# 1. Packages
 if [ "$(uname)" == "Darwin" ]; then
-    #running on Mac OS
-    echo "Running install on macos..."
-    echo "Install homebrew..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    echo "Install essentials..."
-    brew install zsh git
-
-    echo "Install oh-my-zsh..."
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-
-    echo "Installing desktop apps..."
-    brew install --cask rectangle
-    brew install --cask whatsapp
-    brew install --cask skype
-    brew install --cask slack
-    brew install --cask google-chrome
-    brew install --cask warp
-
-elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ] || [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
-    #running on Windows 
-    echo "Stop right now and reconsider your actions"
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-    #running on Linux
-    echo "Install essentials..."
-    sudo apt install git
-    sudo apt install zsh
-
-    echo "Install oh-my-zsh..."
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    echo "==> macOS packages"
+    if ! have brew; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+    brew bundle --no-upgrade --file "$DOTFILES_DIR/Brewfile"
+elif [ "$(uname -s)" == "Linux" ]; then
+    echo "==> Linux packages"
+    sudo apt install -y git zsh tmux vim curl nodejs npm
+    npm install -g @openai/codex                                        # Codex CLI
+    curl -fsSL https://claude.ai/install.sh | bash                      # Claude Code CLI
+    curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash  # Hermes Agent CLI
+else
+    echo "Unsupported OS: $(uname -s)"; exit 1
 fi
 
-mkdir $HOME/.vim
+# 2. Shell
+echo "==> oh-my-zsh"
+clone_if_missing https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
 
-DOTFILES_DIR=`echo $HOME`/.dotfiles
-ln -sfv "$DOTFILES_DIR/.bash_profile" ~
-ln -sfv "$DOTFILES_DIR/.inputrc" ~
-ln -sfv "$DOTFILES_DIR/.gitconfig" ~
-ln -sfv "$DOTFILES_DIR/.gitignore_global" ~
-ln -sfv "$DOTFILES_DIR/.vimrc" ~
-ln -sfv "$DOTFILES_DIR/.ycm_extra_conf.py" ~/.vim
-ln -sfv "$DOTFILES_DIR/.tmux.conf" ~
-ln -sfv "$DOTFILES_DIR/.tmuxline" ~
+# 3. Dotfiles
+echo "==> symlinks"
+for f in .zshrc .bashrc .inputrc .gitconfig .vimrc .tmux.conf .tmuxinator; do link "$f"; done
+mkdir -p "$HOME/.vim/templates"
+link .ycm_extra_conf.py "$HOME/.vim"
+link .vim/templates/c_template.txt "$HOME/.vim/templates"
+link .vim/templates/py_template.txt "$HOME/.vim/templates"
 
-mkdir -p ~/.vim/templates
-ln -sfv "$DOTFILES_DIR/.vim/templates/c_template.txt" ~/.vim/templates
-ln -sfv "$DOTFILES_DIR/.vim/templates/py_template.txt" ~/.vim/templates
+# 4. Vim + tmux plugins
+echo "==> vim/tmux plugins"
+clone_if_missing https://github.com/VundleVim/Vundle.vim.git "$HOME/.vim/bundle/Vundle.vim"
+vim -E -s -u "$HOME/.vimrc" +PluginInstall +qall </dev/null >/dev/null 2>&1 || true
+clone_if_missing https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
 
-git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+# 5. Agentic tooling
+echo "==> Hindsight"
+have hindsight || [ -x "$HOME/.local/bin/hindsight" ] || curl -fsSL https://hindsight.vectorize.io/get-cli | bash
+if [ ! -f "$HOME/.hindsight/coding-agent.json" ] && [ -t 0 ]; then
+    # Wires memory into Claude Code / Codex / ...; asks where memory lives (cloud / daemon / self-hosted).
+    npx -y @vectorize-io/hindsight-coding-agents install all
+fi
+if have hermes && [ ! -d "$HOME/.hermes/plugins/hindsight" ]; then
+    hermes plugins install hindsight   # then: hermes memory setup -> "hindsight"
+fi
 
-# Install all vim plugins 
-vim +PluginInstall +qall
+# 6. Private config (agent settings, skills, memory) — needs a GitHub SSH key on this machine
+echo "==> private dotfiles"
+if ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    clone_if_missing "$PRIVATE_REPO" "$PRIVATE_DIR"
+    "$PRIVATE_DIR/install.sh"
+    # Shared agent skills (github.com/Jonksar/.skills): one checkout, linked into every agent
+    clone_if_missing git@github.com:Jonksar/.skills.git "$HOME/.skills"
+    mkdir -p "$HOME/.claude" "$HOME/.codex" "$HOME/.hermes/skills"
+    for d in "$HOME/.claude/skills" "$HOME/.codex/skills" "$HOME/.hermes/skills/shared"; do
+        [ -L "$d" ] || { [ -e "$d" ] && mv "$d" "$d.pre-dotfiles"; ln -sfnv "$HOME/.skills" "$d"; }
+    done
+else
+    echo "No GitHub SSH access; skipped. Add your SSH key to GitHub, then:"
+    echo "  git clone $PRIVATE_REPO $PRIVATE_DIR && $PRIVATE_DIR/install.sh"
+fi
 
-# Tmux plugin manager install
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+echo "==> done. Open a new shell, or: exec zsh"
