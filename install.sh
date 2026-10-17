@@ -72,6 +72,8 @@ echo "==> private dotfiles"
 if ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
     clone_if_missing "$PRIVATE_REPO" "$PRIVATE_DIR"
     "$PRIVATE_DIR/install.sh"
+    # Extra packages that are not worth publishing (generated from the previous machine)
+    [ "$(uname)" == "Darwin" ] && [ -f "$PRIVATE_DIR/Brewfile" ] && brew bundle --no-upgrade --file "$PRIVATE_DIR/Brewfile"
     # Shared agent skills (github.com/Jonksar/.skills): one checkout, linked into every agent
     clone_if_missing git@github.com:Jonksar/.skills.git "$HOME/.skills"
     mkdir -p "$HOME/.claude" "$HOME/.codex" "$HOME/.hermes/skills"

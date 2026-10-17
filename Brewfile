@@ -7,6 +7,7 @@ brew "gh"
 brew "hermes-agent"  # Hermes Agent CLI (Nous Research)
 
 # Desktop apps
+cask "font-meslo-lg-nerd-font"  # for the agnoster prompt
 cask "rectangle"
 cask "whatsapp"
 cask "slack"
