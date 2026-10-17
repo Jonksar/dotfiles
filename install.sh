@@ -38,6 +38,13 @@ else
     echo "Unsupported OS: $(uname -s)"; exit 1
 fi
 
+# 1b. macOS: keep the machine awake while on AC power (LaunchAgent running caffeinate -s)
+if [ "$(uname)" == "Darwin" ]; then
+    mkdir -p "$HOME/Library/LaunchAgents"
+    link macos/com.jonksar.caffeinate.plist "$HOME/Library/LaunchAgents"
+    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.jonksar.caffeinate.plist" 2>/dev/null || true
+fi
+
 # 2. Shell
 echo "==> oh-my-zsh"
 clone_if_missing https://github.com/ohmyzsh/ohmyzsh.git "$HOME/.oh-my-zsh"
