@@ -83,10 +83,12 @@ if ssh -o BatchMode=yes -o StrictHostKeyChecking=accept-new -T git@github.com 2>
     [ "$(uname)" == "Darwin" ] && [ -f "$PRIVATE_DIR/Brewfile" ] && brew bundle --no-upgrade --file "$PRIVATE_DIR/Brewfile"
     # Shared agent skills (github.com/Jonksar/.skills): one checkout, linked into every agent
     clone_if_missing git@github.com:Jonksar/.skills.git "$HOME/.skills"
-    mkdir -p "$HOME/.claude" "$HOME/.codex" "$HOME/.hermes/skills"
-    for d in "$HOME/.claude/skills" "$HOME/.codex/skills" "$HOME/.hermes/skills/shared"; do
-        [ -L "$d" ] || { [ -e "$d" ] && mv "$d" "$d.pre-dotfiles"; ln -sfnv "$HOME/.skills" "$d"; }
+    # Each agent keeps its own skills dir (they also hold symlinks into other repos); add .skills entries that are missing
+    mkdir -p "$HOME/.claude/skills" "$HOME/.codex/skills" "$HOME/.hermes/skills"
+    for s in "$HOME"/.skills/*/; do n="$(basename "$s")"
+        for d in "$HOME/.claude/skills" "$HOME/.codex/skills"; do [ -e "$d/$n" ] || [ -L "$d/$n" ] || ln -s "${s%/}" "$d/$n"; done
     done
+    [ -e "$HOME/.hermes/skills/shared" ] || ln -sfn "$HOME/.skills" "$HOME/.hermes/skills/shared"
 else
     echo "No GitHub SSH access; skipped. Add your SSH key to GitHub, then:"
     echo "  git clone $PRIVATE_REPO $PRIVATE_DIR && $PRIVATE_DIR/install.sh"
