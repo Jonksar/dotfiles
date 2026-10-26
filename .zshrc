@@ -16,3 +16,15 @@ alias ll='ls -lah' l='ls' sl='ls'
 alias ,gs='git status' ,pp='git pull && git push'
 
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# nvm costs ~0.8s per shell, so load it on first use; until then the newest installed node is on PATH.
+export NVM_DIR="$HOME/.nvm"
+_nvm_node=("$NVM_DIR"/versions/node/*(N/nOn[1]))
+(( $#_nvm_node )) && export PATH="$_nvm_node[1]/bin:$PATH"
+unset _nvm_node
+nvm() {
+  unfunction nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  nvm "$@"
+}
