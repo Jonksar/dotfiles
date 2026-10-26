@@ -17,7 +17,7 @@ alias ,gs='git status' ,pp='git pull && git push'
 
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
 
-# nvm costs ~0.8s per shell, so load it on first use; until then the newest installed node is on PATH.
+# Defer nvm's ~0.8s startup cost; see README.md for Node version selection.
 export NVM_DIR="$HOME/.nvm"
 _nvm_node=("$NVM_DIR"/versions/node/*(N/nOn[1]))
 (( $#_nvm_node )) && export PATH="$_nvm_node[1]/bin:$PATH"

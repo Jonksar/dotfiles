@@ -31,6 +31,7 @@ After install: `hermes memory setup` → choose "hindsight".
 - Change agent config / memory: it's already written into `~/.dotfiles-private` via symlinks — `cd ~/.dotfiles-private && git add -A && git commit -m update && git push`.
 - Add a skill: `~/.skills/<name>/SKILL.md`, commit, push.
 - Machine-specific shell bits: `~/.zshrc.local` (private repo), sourced by `.zshrc`.
+- Node in zsh: the newest Node version installed under `~/.nvm/versions/node` is added to PATH so `node` and `npm` work without loading nvm. The first `nvm` call loads nvm and its completion, selects the default alias, then runs the requested command. Until that call, Node uses the newest installed version rather than the default alias.
 
 # Linux
 `install.sh` installs git/zsh/tmux/vim/node via apt and the Codex, Claude Code and Hermes CLIs via their installers. No desktop apps.
