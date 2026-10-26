@@ -16,3 +16,16 @@ alias ll='ls -lah' l='ls' sl='ls'
 alias ,gs='git status' ,pp='git pull && git push'
 
 [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+# Defer nvm's ~0.8s startup cost; see README.md for Node version selection.
+export NVM_DIR="$HOME/.nvm"
+_nvm_node=("$NVM_DIR"/versions/node/*(N/nOn[1]))
+(( $#_nvm_node )) && export PATH="$_nvm_node[1]/bin:$PATH"
+unset _nvm_node
+nvm() {
+  unfunction nvm
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  nvm use --silent default >/dev/null 2>&1
+  nvm "$@"
+}
